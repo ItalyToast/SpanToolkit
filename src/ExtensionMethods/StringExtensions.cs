@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpanToolkit.ExtensionMethods
+namespace SpanToolkit
 {
     public static class StringExtensions
     {
-        internal static SpanParser AsSpanParser(this string str) => new SpanParser(str);
+        public static SpanParser AsSpanParser(this string str) => new SpanParser(str);
     }
 }
