@@ -76,10 +76,10 @@ namespace SpanToolkit
             => double.Parse(Read(size), style, provider);
         #endregion
 
-        public ReadOnlySpan<char> Read(int size)
+        public ReadOnlySpan<char> Read(int size, int offset = 0)
         {
             var result = str.Slice(0, size);
-            str = str.Slice(size);
+            str = str.Slice(size + offset);
             return result;
         }
 
@@ -88,6 +88,30 @@ namespace SpanToolkit
 
         public ReadOnlySpan<char> ReadTo(ReadOnlySpan<char> c, int offset = 0)
             => Read(str.IndexOf(c) + offset);
+
+        public ReadOnlySpan<char> ReadWhile(Func<char, bool> filter, int offset = 0)
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (!filter(str[i]))
+                {
+                    return Read(i, offset);
+                }
+            }
+            throw new ArgumentOutOfRangeException("Read past the buffer");
+        }
+
+        public ReadOnlySpan<char> ReadWhile(Func<char, int, bool> filter, int offset = 0)
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (!filter(str[i], i))
+                {
+                    return Read(i, offset);
+                }
+            }
+            throw new ArgumentOutOfRangeException("Read past the buffer");
+        }
 
         public void Advance(int size) => str = str.Slice(size);
 
